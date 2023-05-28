@@ -12,6 +12,10 @@
 #include <linux/pagemap.h>
 #include <linux/tracepoint-defs.h>
 
+#ifdef CONFIG_LOOK_AROUND
+#include <linux/rmap.h>
+#endif
+
 /*
  * The set of flags that only affect watermark checking and reclaim
  * behaviour. This is used by the MM to obey the caller constraints
@@ -642,5 +646,13 @@ struct migration_target_control {
 	nodemask_t *nmask;
 	gfp_t gfp_mask;
 };
+
+#ifdef CONFIG_LOOK_AROUND
+extern void look_around(struct page_vma_mapped_walk *pvmw,
+                         struct page *page, struct vm_area_struct *vma, int *referenced);
+extern void check_page_look_around_ref(struct page *page, int *look_around_ref);
+extern void test_clear_look_around_ref(struct page *page);
+extern void look_around_migrate_page(struct page *old_page, struct page *new_page);
+#endif
 
 #endif	/* __MM_INTERNAL_H */
